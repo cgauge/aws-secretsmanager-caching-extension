@@ -1,0 +1,20 @@
+name: AWS Lambda Extension
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - run: make build-docker-image
+
+      - run: make publish-lambda-extension
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.EXTENSION_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.EXTENSION_AWS_SECRET_ACCESS_KEY }}
