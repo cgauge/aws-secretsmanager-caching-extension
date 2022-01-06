@@ -23,14 +23,23 @@ build-lambda-extension: build-docker-image
 publish-lambda-extension: build-lambda-extension
 	declare -a REGIONS=( "eu-west-1" "us-east-1" "ap-southeast-2" ) ; \
 	for region in "$${REGIONS[@]}" ; do \
-		aws lambda publish-layer-version \
+		layerVersion=$$(aws lambda publish-layer-version \
 			--region $$region \
 			--layer-name 'secretsmanager-caching-extension' \
 			--description 'Cache secret server extension' \
-			--license-info MIT \
+			--license-info LGPLv3 \
 			--output text \
 			--query Version \
-			--zip-file fileb://.build/extension.zip; \
+			--zip-file fileb://.build/extension.zip) ; \
+		aws lambda add-layer-version-permission \
+			--output text \
+			--query RevisionId \
+			--region $$region \
+			--layer-name 'secretsmanager-caching-extension' \
+			--version-number $$layerVersion \
+			--statement-id public \
+			--action 'lambda:GetLayerVersion' \
+			--principal '*'; \
 	done
 
 .PHONY: publish-docker-image build-docker-image publish-lambda-extension build-lambda-extension
