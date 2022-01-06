@@ -1,0 +1,23 @@
+"@startuml Secret request"
+
+' Visualize it at https://sequencediagram.org/
+
+actor User
+participant Container as C
+participant "Sidecar Container (Cache server)" as LE
+participant "Secrets Manager" AS SM
+
+title Request secret using cache server
+
+User -> C:
+C -> LE: Ask secret to cache server
+LE -> SM: Get Secret from Secrets Manager
+SM->LE:
+note over of LE: Store the secret value
+LE->C: Return secret value
+
+== Next requests ==
+
+User -> C:
+C -> LE: Ask secret to cache server
+LE->C: Return cached secret value

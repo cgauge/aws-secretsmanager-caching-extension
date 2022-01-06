@@ -1,0 +1,23 @@
+"@startuml Secret request"
+
+' Visualize it at https://sequencediagram.org/
+
+actor User
+participant Lambda
+participant "Lambda Extension (Cache server)" as LE
+participant "Secrets Manager" AS SM
+
+title Request secret using cache server
+
+User -> Lambda: Execute a Lambda
+Lambda -> LE: Ask secret to cache server
+LE -> SM: Get Secret from Secrets Manager
+SM->LE:
+note over of LE: Store the secret value
+LE->Lambda: Return secret value
+
+== Next requests ==
+
+User -> Lambda: Execute a Lambda
+Lambda -> LE: Ask secret to cache server
+LE->Lambda: Return cached secret value
