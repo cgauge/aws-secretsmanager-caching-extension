@@ -2,7 +2,7 @@ FROM golang:1.17-alpine as build
 
 ARG CGO_ENABLED=0
 
-RUN apk add upx
+RUN apk add upx ca-certificates
 
 WORKDIR /app
 
@@ -29,6 +29,7 @@ RUN go build -ldflags="-s -w" -o /cache-server main.go \
 FROM scratch
 
 COPY --from=build-sidecar /cache-server /cache-server
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 EXPOSE 8015
 
