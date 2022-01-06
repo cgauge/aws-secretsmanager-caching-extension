@@ -4,20 +4,20 @@
 
 actor User
 participant Container as C
-participant "Sidecar Container (Cache server)" as LE
-participant "Secrets Manager" AS SM
+participant "Sidecar Container (Cache server)" as SC
+participant "Secrets Manager" as SM
 
 title Request secret using cache server
 
 User -> C:
-C -> LE: Ask secret to cache server
-LE -> SM: Get Secret from Secrets Manager
-SM->LE:
-note over of LE: Store the secret value
-LE->C: Return secret value
+C -> SC: Ask secret to cache server
+SC -> SM: Get Secret from Secrets Manager
+SM->SC:
+note over of SC: Store the secret value
+SC->C: Return secret value
 
 == Next requests ==
 
 User -> C:
-C -> LE: Ask secret to cache server
-LE->C: Return cached secret value
+C -> SC: Ask secret to cache server
+SC->C: Return cached secret value

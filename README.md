@@ -18,6 +18,14 @@ The server runs on port 8015 and receives the secret name and the refresh parame
 
 ![Diagram cache server](docs/container-sequence.png)
 
+## Use Case
+
+Use the cache server to retreive database password to connect to the database in different Lambda Runtimes.
+
+Laravel Aurora Connector (https://github.com/cgauge/laravel-aurora-connector) library use this strategy.
+
+Some implementation details can be found here: https://github.com/cgauge/laravel-aurora-connector/blob/main/src/PasswordResolver.php
+
 ## Usage
 
 ### Lambda Extension
