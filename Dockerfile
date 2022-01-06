@@ -1,10 +1,10 @@
-FROM golang:1.17 as build
+FROM golang:1.17-alpine as build
 
 ARG CGO_ENABLED=0
 
-WORKDIR /app
+RUN apk add upx
 
-RUN apt-get update && apt-get install -y upx
+WORKDIR /app
 
 COPY go.mod go.sum ./
 
@@ -14,10 +14,14 @@ COPY . .
 
 FROM build as build-sidecar
 
+ARG CGO_ENABLED=0
+
 RUN go build -ldflags="-s -w" -o /cache-server main_container.go \
  && upx --best --lzma /cache-server
 
 FROM build as build-extension
+
+ARG CGO_ENABLED=0
 
 RUN go build -ldflags="-s -w" -o /cache-server main.go \
  && upx --best --lzma /cache-server
