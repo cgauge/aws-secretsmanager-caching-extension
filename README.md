@@ -39,7 +39,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: index.handler
-      Runtime: nodejs12.x
+      Runtime: nodejs14.x
       CodeUri: function/.
       Layers:
         - arn:aws:lambda:eu-west-1:12345678:layer:secretsmanager-caching-extension:1
@@ -49,7 +49,7 @@ functions:
   hello:
     handler: handler.hello
     layers:
-        - arn:aws:lambda:eu-west-1:12345678:layer:secretsmanager-caching-extension:1
+      - arn:aws:lambda:eu-west-1:12345678:layer:secretsmanager-caching-extension:1
 ```
 
 ### Sidecar Container
