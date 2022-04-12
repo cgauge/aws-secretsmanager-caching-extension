@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 )
 
@@ -25,6 +26,8 @@ type CacheData struct {
 	Data        string
 	CacheExpiry time.Time
 }
+
+var mutex = &sync.Mutex{}
 
 func IsExpired(cacheExpiry time.Time) bool {
 	return cacheExpiry.Before(time.Now())
@@ -48,12 +51,14 @@ func GetSecretCache(name string, refresh string) string {
 	secret := secretCache[name]
 
 	if IsExpired(secret.CacheData.CacheExpiry) || refresh == "1" {
+		mutex.Lock()
 		secretCache[name] = Secret{
 			CacheData: CacheData{
 				Data:        GetSecret(name),
 				CacheExpiry: GetCacheExpiry(),
 			},
 		}
+		mutex.Unlock()
 	}
 
 	return secretCache[name].CacheData.Data
