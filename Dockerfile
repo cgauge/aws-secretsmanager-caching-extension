@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine as build
+FROM golang:1.23-alpine AS build
 
 ARG CGO_ENABLED=0
 
@@ -12,14 +12,14 @@ RUN go mod download
 
 COPY . .
 
-FROM build as build-sidecar
+FROM build AS build-sidecar
 
 ARG CGO_ENABLED=0
 
 RUN go build -ldflags="-s -w" -o /cache-server main_container.go \
  && upx --best --lzma /cache-server
 
-FROM build as build-extension
+FROM build AS build-extension
 
 ARG CGO_ENABLED=0
 
