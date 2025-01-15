@@ -27,7 +27,7 @@ type CacheData struct {
 	CacheExpiry time.Time
 }
 
-var mutex = &sync.Mutex{}
+var mutex = &sync.RWMutex{}
 
 func IsExpired(cacheExpiry time.Time) bool {
 	return cacheExpiry.Before(time.Now())
@@ -48,9 +48,14 @@ func GetCacheExpiry() time.Time {
 }
 
 func GetSecretCache(name string, refresh string) string {
+	mutex.RLock()
 	secret := secretCache[name]
+	mutex.RUnlock()
+
+	println("GetSecretCache: ", name)
 
 	if IsExpired(secret.CacheData.CacheExpiry) || refresh == "1" {
+		println("GetSecretCache: refresh")
 		mutex.Lock()
 		secretCache[name] = Secret{
 			CacheData: CacheData{
